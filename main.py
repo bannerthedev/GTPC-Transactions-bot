@@ -7,6 +7,11 @@ import discord
 from discord.ext import commands
 from typing import Optional, List, Dict, Set
 
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
 logging.basicConfig(level=logging.INFO)
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -2731,4 +2736,4 @@ async def print_guild_commands():
         logging.exception("Failed to fetch guild commands")
 
 if __name__ == "__main__":
-    bot.run(TOKEN)
+    bot.run(os.getenv("TOKEN"))
