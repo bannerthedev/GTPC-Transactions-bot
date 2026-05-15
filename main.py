@@ -17,7 +17,6 @@ logging.basicConfig(level=logging.INFO)
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # ---------------- CONFIG (fill these) ----------------
-TOKEN = "MTUwMjQxNzk0ODU0NTkwODg1OA.GNcmln.8NVKZOYBK8LnzaRVGgAlh2Z_bxF3unqzgn0C6o"  # <--- PUT YOUR REAL TOKEN HERE
 GUILD_ID = 1273371437817790514  # your guild id as int
 
 MATCH_TIMES_CHANNEL_ID = 1288006765874643006
