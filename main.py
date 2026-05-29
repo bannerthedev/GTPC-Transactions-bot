@@ -70,17 +70,23 @@ def gtag_to_hex(code: str) -> int:
     return (r << 16) + (g << 8) + b
 
 
-def _safe_load_json(path: Path, default):
-    if not path.exists():
+def _safe_load_json(path, default):
+    """
+    Accepts either a pathlib.Path or a string path. Returns default if file
+    doesn't exist, is empty, or is invalid JSON. On invalid JSON the file
+    will be reset to the default content.
+    """
+    p = Path(path)
+    if not p.exists():
         return default
-    raw = path.read_text(encoding="utf-8").strip()
+    raw = p.read_text(encoding="utf-8").strip()
     if not raw:
         return default
     try:
         return json.loads(raw)
     except Exception as e:
-        print(f"[ERROR] {path.name} invalid: {e}. Resetting.")
-        path.write_text(json.dumps(default, indent=4), encoding="utf-8")
+        print(f"[ERROR] {p.name} invalid: {e}. Resetting.")
+        p.write_text(json.dumps(default, indent=4), encoding="utf-8")
         return default
 
 
@@ -1707,7 +1713,7 @@ class TeamManager(commands.Cog):
 )
 async def info(interaction: discord.Interaction):
     embed = discord.Embed(
-        title="GTPC Transactions Bot – Command Guide",
+        title="GTPL Transactions Bot – Command Guide",
         description="Public + team commands.",
         colour=discord.Colour.blurple(),
     )
@@ -1759,7 +1765,7 @@ async def info(interaction: discord.Interaction):
     )
     embed.add_field(
         name="/change-captain (captains)",
-        value="Change the team's captain (COMMING SOONe.g. banner1234 to trulexgtag).",
+        value="Change the team's captain (e.g. banner1234 to mmm.compsova).",
         inline=False,
     )
     embed.add_field(
@@ -1793,7 +1799,7 @@ async def admin_info(interaction: discord.Interaction):
         return
 
     embed = discord.Embed(
-        title="GTPC Transactions Bot – Admin Command Guide",
+        title="GTPL Transactions Bot – Admin Command Guide",
         description="Admin-only commands.",
         colour=discord.Colour.red(),
     )
@@ -1865,7 +1871,7 @@ async def admin_info(interaction: discord.Interaction):
 @bot.tree.command(
     guild=GUILD_OBJ,
     name="faq",
-    description="Post the GTPC FAQ and auto-role buttons (admins only)."
+    description="Post the GTPL FAQ and auto-role buttons (admins only)."
 )
 async def faq(interaction: discord.Interaction):
     # admin-only guard
@@ -1895,22 +1901,22 @@ async def faq(interaction: discord.Interaction):
     await interaction.response.defer(ephemeral=True)
 
     text = (
-        "# Gorilla Tag Pro Competitive Frequently Asked Questions\n\n"
+        "# Gorilla Tag Premire League Asked Questions\n\n"
         "## • How can I make a team/How do I get it official?\n\n"
         "> **Making a team is quite easy,**\n"
         "> - Simply make a discord for your team, and use recruitment-center,\n"
         "> - Getting your team official is another challenge however,\n"
         "> **The first step to getting your team official is getting unborn captain role!,**\n"
-        "> - We will use <#1273380150058422415> to update you on our team situation! We pick the best teams we can from out forms, so make sure you are active and competitive!\n"
+        "> - We will use <#1479692824894247012> to update you on our team situation! We pick the best teams we can from out forms, so make sure you are active and competitive!\n"
         "> - Teams normally get selected at the start of a new season or replacing an older team during seeding season,\n"
         "> **If you are interested, use our auto roles to join!**\n\n"
         "## • Moderation Support\n\n"
         "> - If you have any reports of players, please open a ticket so the moderation team can tend to it,\n"
         "> - Tickets are not a place for discussion or questions, if you have something to ask, please head over to questions!,\n\n"
         "## • Application Forms\n\n"
-        "> - GTPC has a various list of positions and applications to better help the league!,\n"
+        "> - GTPL has a various list of positions and applications to better help the league!,\n"
         "> - These applications are looked at when needed, you will be messaged if it is accepted\n"
-        "> <#1484659683351461938>\n\n"
+        "> <#1500305586061840495>\n\n"
         "# ー Role Assign\n"
         "> 🎥 **Stream Watcher** ー Get Notified when a Live Match is occurring!\n"
         "> 🚀 **Unborn Captain** ー Allows you to apply your team to participate in the league!\n"
@@ -2044,7 +2050,7 @@ async def code(interaction: discord.Interaction, team1: discord.Role, team2: dis
         return
 
     await interaction.response.defer(ephemeral=True)
-    code_value = f"GTPC{random.randint(1000, 9999)}"
+    code_value = f"GTPL{random.randint(1000, 9999)}"
 
     if interaction.channel is None:
         await interaction.followup.send("Cannot determine channel.", ephemeral=True)
@@ -2168,7 +2174,7 @@ async def addscrim(
 
     msg = (
         f"{team1.mention} vs {team2.mention}\n\n"
-        "# Welcome to GTPC Bracket.\n"
+        "# Welcome to GTPL Bracket.\n"
         "> 📅 You guys will have 3 day to schedule \n"
         "> ⚔️ And 4 days to play\n"
         "> Ping a staff member when you're ready to schedule or have any questions!"
@@ -2274,53 +2280,10 @@ async def submit_score(
     )
 
 
-@bot.event
-async def on_member_remove(member: discord.Member):
-    guild = member.guild
-    # find the single team role they belonged to (if any)
-    team_role = find_single_team_for_member(guild, member)
 
-    # if they were not on exactly one team, do nothing
-    if team_role is None:
-        return
 
-    # remove any pending invites for this user (clean invites.json)
-    try:
-        invites = load_invites()
-        changed = False
-        for key, lst in list(invites.items()):
-            if str(member.id) in lst:
-                lst.remove(str(member.id))
-                changed = True
-                if not lst:
-                    invites.pop(key, None)
-                else:
-                    invites[key] = lst
-        if changed:
-            save_invites(invites)
-    except Exception:
-        pass
 
-    # update player history: add team to past_teams if not already present
-    try:
-        hist = load_player_history()
-        uid = str(member.id)
-        entry = hist.get(uid, {})
-        past = entry.get("past_teams", [])
-        if team_role.name not in past:
-            past.append(team_role.name)
-        entry["past_teams"] = past
-        hist[uid] = entry
-        save_player_history(hist)
-    except Exception:
-        pass
 
-    # send transaction message
-    tx_ch = guild.get_channel(TRANSACTIONS_ID)
-    if tx_ch:
-        await tx_ch.send(
-            f"{member.mention} has left the server and was automatically removed from **{team_role.name}**"
-        )
 
 # ---------------- READY / RUN ----------------
 @bot.event
