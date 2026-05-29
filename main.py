@@ -77,22 +77,16 @@ def gtag_to_hex(code: str) -> int:
     return (r << 16) + (g << 8) + b
 
 def _safe_load_json(path, default):
-    logging.getLogger().warning(f"SAFE_LOAD_JSON CALLED: type={type(path)} path={path}")
-
     path = Path(path)
-    logging.getLogger().warning(f"SAFE_LOAD_JSON AFTER Path(): type={type(path)} path={path}")
-
     if not path.exists():
         return default
-
     raw = path.read_text(encoding="utf-8").strip()
     if not raw:
         return default
-
     try:
         return json.loads(raw)
     except Exception as e:
-        logging.getLogger().warning(f"[ERROR] {path.name} invalid: {e}. Resetting.")
+        print(f"[ERROR] {path.name} invalid: {e}. Resetting.")
         path.write_text(json.dumps(default, indent=4), encoding="utf-8")
         return default
 
