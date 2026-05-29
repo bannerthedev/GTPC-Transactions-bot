@@ -1,25 +1,26 @@
-# main.py (discord.py v2) — clean full file
 from __future__ import annotations
 
 import asyncio
 import json
 import logging
+import os
 import random
 from pathlib import Path
-import dotenv
+
 from dotenv import load_dotenv
-import os
 
 import discord
 from discord import app_commands
 from discord.ext import commands
 
-logging.basicConfig(level=logging.INFO)
-load_dotenv()
-logging.getLogger().warning("BOOT OK - main.py version 1")
-logging.getLogger().warning(f"BOOTED FILE: {__file__}")
-logging.getLogger().warning("SAFE_LOAD_JSON VERSION: 2026-05-29-1")
+logging.basicConfig(level=logging.INFO, force=True)
+log = logging.getLogger("discord")
 
+load_dotenv()
+
+log.warning("BOOT OK - main.py version 1")
+log.warning(f"BOOTED FILE: {__file__}")
+log.warning("SAFE_LOAD_JSON VERSION: 2026-05-29-1")
 
 
 # ---------------- CONFIG (fill these) ----------------
