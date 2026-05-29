@@ -1,3 +1,4 @@
+raise RuntimeError("BOOT TEST - if you see this, Railway is running the updated file")
 from __future__ import annotations
 
 import asyncio
