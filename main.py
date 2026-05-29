@@ -1,4 +1,4 @@
-raise RuntimeError("BOOT TEST - if you see this, Railway is running the updated file")
+raise RuntimeError("BOOT TEST - Railway is running THIS main.py")
 from __future__ import annotations
 
 import asyncio
