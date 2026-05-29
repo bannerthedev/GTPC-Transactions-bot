@@ -16,6 +16,7 @@ from discord.ext import commands
 
 logging.basicConfig(level=logging.INFO)
 load_dotenv()
+print("BOOT OK - main.py version 1")
 print("BOOTED FILE:", __file__)
 print("SAFE_LOAD_JSON VERSION: 2026-05-29-1")
 
