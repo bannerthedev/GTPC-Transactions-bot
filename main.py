@@ -55,11 +55,13 @@ EVENT_PING_ROLE_ID = 1508258542950285492      # 🎉 Event Ping
 # ----------------------------------------------------
 
 # ---------------- FILES ----------------
-TEAMS_FILE = Path("teams.json")
-PLAYER_HISTORY_FILE = Path("player_history.json")
-INVITES_FILE = Path("invites.json")
-ROSTER_LOCK_FILE = Path("roster_lock.json")
+DATA_DIR = Path("/data")
+DATA_DIR.mkdir(parents=True, exist_ok=True)
 
+TEAMS_FILE = DATA_DIR / "teams.json"
+PLAYER_HISTORY_FILE = DATA_DIR / "player_history.json"
+INVITES_FILE = DATA_DIR / "invites.json"
+ROSTER_LOCK_FILE = DATA_DIR / "roster_lock.json"
 
 # ---------------- HELPERS ----------------
 def is_staff(user: discord.Member) -> bool:
