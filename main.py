@@ -71,12 +71,14 @@ def gtag_to_hex(code: str) -> int:
 
 
 def _safe_load_json(path, default):
-    path = Path(path)
+    path = Path(path)  # convert str -> Path (safe if already Path)
     if not path.exists():
         return default
+
     raw = path.read_text(encoding="utf-8").strip()
     if not raw:
         return default
+
     try:
         return json.loads(raw)
     except Exception as e:
