@@ -71,23 +71,18 @@ def gtag_to_hex(code: str) -> int:
 
 
 def _safe_load_json(path, default):
-    print("[SAFE_LOAD_JSON]", path, type(path))  # TEMP debug line
-
-    p = Path(path)
-    if not p.exists():
+    path = Path(path)  # <- MUST be first
+    if not path.exists():
         return default
-
-    raw = p.read_text(encoding="utf-8").strip()
+    raw = path.read_text(encoding="utf-8").strip()
     if not raw:
         return default
-
     try:
         return json.loads(raw)
     except Exception as e:
-        print(f"[ERROR] {p.name} invalid: {e}. Resetting.")
-        p.write_text(json.dumps(default, indent=4), encoding="utf-8")
+        print(f"[ERROR] {path.name} invalid: {e}. Resetting.")
+        path.write_text(json.dumps(default, indent=4), encoding="utf-8")
         return default
-
 
 def load_teams() -> list:
     return _safe_load_json(TEAMS_FILE, [])
