@@ -71,17 +71,16 @@ def gtag_to_hex(code: str) -> int:
 
 
 def _safe_load_json(path, default):
-    """
-    Accepts either a pathlib.Path or a string path. Returns default if file
-    doesn't exist, is empty, or is invalid JSON. On invalid JSON the file
-    will be reset to the default content.
-    """
+    print("[SAFE_LOAD_JSON]", path, type(path))  # TEMP debug line
+
     p = Path(path)
     if not p.exists():
         return default
+
     raw = p.read_text(encoding="utf-8").strip()
     if not raw:
         return default
+
     try:
         return json.loads(raw)
     except Exception as e:
