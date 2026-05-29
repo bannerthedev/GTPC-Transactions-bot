@@ -16,6 +16,9 @@ from discord.ext import commands
 
 logging.basicConfig(level=logging.INFO)
 load_dotenv()
+print("BOOTED FILE:", __file__)
+print("SAFE_LOAD_JSON VERSION: 2026-05-29-1")
+
 
 # ---------------- CONFIG (fill these) ----------------
 GUILD_ID = 1273371437817790514  # your guild/server ID
@@ -74,6 +77,7 @@ def _safe_load_json(path, default):
     path = Path(path)  # convert str -> Path (safe if already Path)
     if not path.exists():
         return default
+print("SAFE_LOAD_JSON CALLED:", type(path), path)
 
     raw = path.read_text(encoding="utf-8").strip()
     if not raw:
