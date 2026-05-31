@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-raise RuntimeError("BOOT TEST - Railway is running THIS main.py")
-
 import asyncio
 import json
 import logging
