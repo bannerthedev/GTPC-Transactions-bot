@@ -1,5 +1,6 @@
-raise RuntimeError("BOOT TEST - Railway is running THIS main.py")
 from __future__ import annotations
+
+raise RuntimeError("BOOT TEST - Railway is running THIS main.py")
 
 import asyncio
 import json
@@ -28,12 +29,11 @@ log.warning("SAFE_LOAD_JSON VERSION: 2026-05-29-1")
 GUILD_ID = 1273371437817790514  # your guild/server ID
 
 # channels
-# channels
 TRANSACTIONS_ID = 1279153976205508718
 MATCH_TIMES_CHANNEL_ID = 1503206384156803192
 ASSIGNMENTS_CHANNEL_ID = 1503223033706582076
 SCRIM_CATEGORY_ID = 1503216258508787732  # put your Scheduling category ID here, or 0 to create/use none
-MATCH_SCORES_CHANNEL_ID = 1396869436342014073 # put your match-score channel ID here
+MATCH_SCORES_CHANNEL_ID = 1396869436342014073  # put your match-score channel ID here
 
 # staff/team roles
 CAPTAIN_ROLE_ID = 1273381699194978386
@@ -78,6 +78,7 @@ def gtag_to_hex(code: str) -> int:
     b = int(code[2]) * 28
     return (r << 16) + (g << 8) + b
 
+
 def _safe_load_json(path, default):
     path = Path(path)
     if not path.exists():
@@ -92,12 +93,6 @@ def _safe_load_json(path, default):
         path.write_text(json.dumps(default, indent=4), encoding="utf-8")
         return default
 
-    try:
-        return json.loads(raw)
-    except Exception as e:
-        print(f"[ERROR] {path.name} invalid: {e}. Resetting.")
-        path.write_text(json.dumps(default, indent=4), encoding="utf-8")
-        return default
 
 def load_teams() -> list:
     return _safe_load_json(TEAMS_FILE, [])
@@ -136,9 +131,9 @@ def save_roster_locks(data: dict) -> None:
     ROSTER_LOCK_FILE.write_text(json.dumps(data, indent=4), encoding="utf-8")
 
 
-def is_roster_locked(guild: discord.Guild, team_role: discord.Role) -> bool:
+def is_roster_locked(guild: discord.Guild, team: discord.Role) -> bool:
     locks = load_roster_locks()
-    return bool(locks.get("ALL", False) or locks.get(str(team_role.id), False))
+    return bool(locks.get("ALL", False) or locks.get(str(team.id), False))
 
 
 def role_in(member: discord.Member, role: discord.Role | None) -> bool:
@@ -327,8 +322,6 @@ class InviteUserSelectView(discord.ui.View):
             f"# You Have been invited to {team_role.name}\n"
             f"{interaction.user.mention} has invited you to {team_role.name}"
         )
-
-
 
         try:
             await target.send(dm_text, view=dm_view)
